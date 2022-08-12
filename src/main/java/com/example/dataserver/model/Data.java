@@ -16,7 +16,7 @@ public class Data {
     private long id;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST, fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id", referencedColumnName = "id")
     private Device device;
 

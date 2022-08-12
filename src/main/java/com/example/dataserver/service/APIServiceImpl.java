@@ -99,4 +99,12 @@ public class APIServiceImpl implements APIService{
     public Device deviceInfo(Device device) {
         return deviceRepository.findTopByToken(device.getToken());
     }
+
+    @Override
+    public ClientResponse deleteAllData() {
+        ClientResponse response = new ClientResponse();
+        dataRepository.deleteAll();
+        response.setMessage("All Data Deleted Successfully");
+        return response;
+    }
 }

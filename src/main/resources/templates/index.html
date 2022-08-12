@@ -1,0 +1,70 @@
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Data Server</title>
+
+    <link rel="stylesheet"
+          type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+          crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <br>
+    <br>
+    <h2 align = "center">Data List</h2>
+
+    <hr/>
+    <a th:href="@{/statistics}" class="btn btn-primary">Statistics</a>
+    <br/><br/>
+    <table class="table table-bordered table-striped" id="dataTable">
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Device Serial Number</th>
+            <th>Timestamp</th>
+            <th>Data</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="data: ${list}">
+            <td th:text="${data.getId()}" />
+            <td th:text="${data.getDevice().getSerialNumber()}" />
+            <td th:text="${data.getTime()}" />
+            <td th:text="${data.getDataString()}" />
+            <td>
+<!--                <a th:href="@{/showUpdateForm(employeeId=${data.getId()})}" class="btn btn-info">Update</a>-->
+
+                <a th:href="@{/deleteData(id=${data.getId()})}" class="btn btn-danger ml-2">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+
+<script>
+    $(document).ready(function() {
+        $("#dataTable").DataTable({
+            'aoColumnDefs': [{
+                'bSortable': false,
+                'aTargets': [-1] /* 1st one, start by the right */
+            }]
+        });
+    })
+</script>
+</body>
+</html>

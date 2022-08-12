@@ -1,0 +1,127 @@
+
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Data Server</title>
+    <link rel="stylesheet"
+          type="text/css"
+          href="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.css" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css"
+          integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l"
+          crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.10.25/datatables.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+</head>
+<body>
+
+<div class="container">
+    <br>
+    <br>
+    <h2 align = "center">Statistics</h2>
+    <hr/>
+
+    <a th:href="@{/all}" class="btn btn-primary">Main Page</a>
+    <br/><br/>
+    <table class="table table-bordered table-striped" id="deviceTable">
+
+        <thead>
+        <tr>
+            <th>Device ID</th>
+            <th>Serial Number</th>
+            <th>Active?</th>
+            <th>Amount</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="device: ${devices}">
+            <td th:text="${device.getId()}" />
+            <td th:text="${device.getSerialNumber()}" />
+            <td th:text="YES" />
+            <td th:text="${device.getData().size()}" />
+            <td>
+<!--                <button th:device-id="${device.getId()}" onclick="draw(this.getAttribute('device-id'))" class="btn btn-info">Draw</button>-->
+<!--                th:href="@{/showUpdateForm(employeeId=${device.getId()})}"-->
+                <a th:href="@{/deleteDevice(deviceId=${device.getId()})}" class="btn btn-danger ml-2">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+
+    </table>
+
+    <div id="curve_chart" style="width: 1200px; height: 500px"></div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+</div>
+
+</body>
+<script th:inline="javascript">
+
+    $(document).ready(function() {
+        $("#deviceTable").DataTable({
+            'aoColumnDefs': [{
+                'bSortable': false,
+                'aTargets': [-1] /* 1st one, start by the right */
+            }]
+        });
+    })
+
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+
+
+    function drawChart() {
+
+        var list = /*[[${data_count}]]*/ [];
+        var ids = /*[[${device_ids}]]*/ [];
+        var dates = /*[[${dates}]]*/ [];
+
+        var data = new Array(ids.length + 1);
+        data[0] = [];
+        data[0][0] = 'IDs';
+        for(var i = 1; i <= ids.length; i++){
+            data[0][i] = ids[i-1];
+        }
+
+        for(var i = 1; i <= dates.length; i++){
+            data[i] = [];
+            data[i][0] = dates[i-1].substring(dates[i-1].indexOf('-') + 1);
+            for(var j = 1; j <= ids.length; j++){
+                data[i][j] = list[i-1][j-1];
+            }
+        }
+
+
+        // console.log(data);
+
+
+        // var data = google.visualization.arrayToDataTable([
+        //     ['Year', '11', '12'],
+        //     ['2004',  1000,      400],
+        //     ['2005',  1170,      460],
+        //     ['2006',  660,       1120],
+        //     ['2007',  1030,      540]
+        // ]);
+
+        var data = google.visualization.arrayToDataTable(data);
+
+        var options = {
+            title: 'Device Statistics',
+            curveType: 'function',
+            legend: { position: 'bottom' }
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+    }
+
+</script>
+</html>

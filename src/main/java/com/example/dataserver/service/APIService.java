@@ -12,4 +12,5 @@ public interface APIService {
     ClientResponse register(Device device);
     ClientResponse upload(UploadRequest data);
     Device deviceInfo(Device device);
+    ClientResponse deleteAllData();
 }

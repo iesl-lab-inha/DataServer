@@ -33,4 +33,9 @@ public class APIController {
     public List<Data> getAll(){
         return apiService.getAll();
     }
+
+    @GetMapping("/delete-all")
+    public ClientResponse deleteAllData(){
+        return apiService.deleteAllData();
+    }
 }
